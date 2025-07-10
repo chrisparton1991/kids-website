@@ -3,8 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Turret+Road:wght@200;300;400;500;700;800&display=swap" rel="stylesheet">
+
     <title>Child Discipliner 4000</title>
     <style>
+        * {
+            font-family: 'Turret Road', sans-serif;
+        }
+
         body {
             display: flex;
             justify-content: center;
@@ -12,7 +20,6 @@
             min-height: 100vh;
             margin: 0;
             background-color: #d8f5da;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
         }
 
         .device-container {
@@ -88,7 +95,6 @@
             color: #333;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
             box-shadow: 
                 0 4px 8px rgba(0, 0, 0, 0.1),
                 inset 0 1px 3px rgba(255, 255, 255, 0.7);
@@ -146,9 +152,9 @@
 
     <script>
         const sounds = {
-            axel: [new Audio('./audio/axel-1.mp3'), new Audio('./audio/axel-2.mp3'), new Audio('./audio/axel-3.mp3')],
-            ivy: [new Audio('./audio/ivy-1.mp3'), new Audio('./audio/ivy-2.mp3'), new Audio('./audio/ivy-3.mp3')],
-            zoe: [new Audio('./audio/zoe-1.mp3'), new Audio('./audio/zoe-2.mp3'), new Audio('./audio/zoe-3.mp3')],
+            axel: ['./audio/axel-1.mp3', './audio/axel-2.mp3', './audio/axel-3.mp3'],
+            ivy: ['./audio/ivy-1.mp3', './audio/ivy-2.mp3', './audio/ivy-3.mp3'],
+            zoe: ['./audio/zoe-1.mp3', './audio/zoe-2.mp3', './audio/zoe-3.mp3'],
         }
 
         const indexes = {
@@ -162,22 +168,19 @@
         function playSound(person) {
             const index = indexes[person]
             
-            const oldSound = sounds[person][index]
-            oldSound.pause()
-            
             indexes[person] = (index + 1) % sounds[person].length
             const sound = sounds[person][index]
 
             if (sound) {
-                sound.currentTime = 0
-                sound.play()
+                const clip = new Audio(sound)
+                clip.play()
                 
                 // Start antenna flashing
                 antennaTip.classList.add('flashing')
                 document.querySelectorAll('button').forEach(it => it.setAttribute('disabled', 'disabled'))
                 
                 // Listen for when the sound ends
-                sound.onended = function() {
+                clip.onended = function() {
                     antennaTip.classList.remove('flashing')
                     document.querySelectorAll('button').forEach(it => it.removeAttribute('disabled'))
                 }
