@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Discipliner 4000</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #d8f5da;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .device-container {
+            position: relative;
+            padding-top: 80px; /* Space for antenna */
+        }
+
+        .antenna {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 200px;
+            z-index: -1;
+        }
+
+        .antenna-tip {
+            fill: #475749;
+        }
+
+        @keyframes flash {
+            0%, 100% { 
+                fill: #475749;
+            }
+            50% { 
+                fill: #ff0000;
+            }
+        }
+
+        .antenna-tip.flashing {
+            animation: flash 0.5s infinite;
+        }
+
+        .remote {
+            background: linear-gradient(145deg, #00ff88, #004d1a);
+            padding: 2rem;
+            border-radius: 25px;
+            box-shadow: 
+                0 10px 20px rgba(0, 0, 0, 0.2),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            width: 300px;
+        }
+
+        .title {
+            color: white;
+            text-align: center;
+            font-size: 1.6rem;
+            margin-bottom: 2rem;
+            margin-left: -8px;
+            margin-right: -8px;
+            margin-top: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .zap {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .button-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .button {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border: none;
+            border-radius: 15px;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.1),
+                inset 0 1px 3px rgba(255, 255, 255, 0.7);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 3px rgba(255, 255, 255, 0.7);
+        }
+
+        .button:active {
+            transform: translateY(1px);
+            background: linear-gradient(145deg, #e6e6e6, #ffffff);
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="device-container">
+        <div class="antenna">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42.84 115.09">
+              <defs>
+                <style>
+                  .cls-1 {
+                    fill: none;
+                    stroke: #2fe38d;
+                    stroke-linecap: round;
+                    stroke-linejoin: round;
+                    stroke-width: 12px;
+                  }
+                </style>
+              </defs>
+              <g id="Layer_1" data-name="Layer 1">
+                <polyline class="cls-1" points="19.31 109.09 19.31 99.35 36.84 81.82 6 50.97 22.31 34.66 22.31 21.43"/>
+              </g>
+              <g id="Layer_2" data-name="Layer 2">
+                <circle class="cls-2 antenna-tip" cx="22.31" cy="15.43" r="15.43"/>
+              </g>
+            </svg>
+        </div>
+        <div class="remote">
+            <h1 class="title zap">⚡</h1>
+            <h1 class="title">Child Discipliner 4000</h1>
+            <div class="button-grid">
+                <button class="button" onclick="playSound('axel')">Axel</button>
+                <button class="button" onclick="playSound('ivy')">Ivy</button>
+                <button class="button" onclick="playSound('zoe')">Zoe</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sounds = {
+            axel: [new Audio('./audio/axel-1.mp3'), new Audio('./audio/axel-2.mp3'), new Audio('./audio/axel-3.mp3')],
+            ivy: [new Audio('./audio/ivy-1.mp3'), new Audio('./audio/ivy-2.mp3'), new Audio('./audio/ivy-3.mp3')],
+            zoe: [new Audio('./audio/zoe-1.mp3'), new Audio('./audio/zoe-2.mp3'), new Audio('./audio/zoe-3.mp3')],
+        }
+
+        const indexes = {
+            axel: 0,
+            ivy: 0,
+            zoe: 0,
+        }
+
+        const antennaTip = document.querySelector('.antenna-tip')
+
+        function playSound(person) {
+            const index = indexes[person]
+            
+            const oldSound = sounds[person][index]
+            oldSound.pause()
+            
+            indexes[person] = (index + 1) % sounds[person].length
+            const sound = sounds[person][index]
+
+            if (sound) {
+                sound.currentTime = 0
+                sound.play()
+                
+                // Start antenna flashing
+                antennaTip.classList.add('flashing')
+                document.querySelectorAll('button').forEach(it => it.setAttribute('disabled', 'disabled'))
+                
+                // Listen for when the sound ends
+                sound.onended = function() {
+                    antennaTip.classList.remove('flashing')
+                    document.querySelectorAll('button').forEach(it => it.removeAttribute('disabled'))
+                }
+            }
+        }
+    </script>
+</body>
+</html>
